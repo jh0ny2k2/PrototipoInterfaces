@@ -134,32 +134,33 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String filePath = System.getProperty("user.home") + File.separator + "DatosLoginRegistro.txt";
         File archivo = new File(filePath);
-
         if (!archivo.exists()) {
             JOptionPane.showMessageDialog(this, "El archivo de usuarios no existe. Por favor, regístrate primero.");
             return;
         }
-
         String usernameIngresado = jTextFieldNombreUsuario.getText().trim();
         String passwordIngresado = new String(jPasswordField.getPassword()).trim();
-
         if (usernameIngresado.isEmpty() || passwordIngresado.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa el nombre de usuario y la contraseña.");
             return;
         }
 
-        boolean usuarioEncontrado = false;
+        // Check for admin login first
+        if ("admin".equals(usernameIngresado) && "admin".equals(passwordIngresado)) {
+            InicioAdmin admin = new InicioAdmin();
+            admin.setVisible(true);
+            return;
+        }
 
+        boolean usuarioEncontrado = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 // Split the line by comma
                 String[] partes = linea.split(",");
-
                 if (partes.length == 2) {
                     String usernameArchivo = partes[0].trim();
                     String passwordArchivo = partes[1].trim();
-
                     if (usernameArchivo.equals(usernameIngresado)
                             && passwordArchivo.equals(passwordIngresado)) {
                         usuarioEncontrado = true;
@@ -180,8 +181,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos. Inténtalo de nuevo.");
         }
-
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonRegistrateYAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistrateYAActionPerformed
